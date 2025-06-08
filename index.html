@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Charrouk Geometry Explorer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* Reset and global styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Background with floating effect */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://images.unsplash.com/photo-1562059600-b30c060d9a47') no-repeat center center/cover; /* Add a suitable background image of mathematical shapes */
+      opacity: 0.1;
+      animation: float 10s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translate(0, 0);
+      }
+      50% {
+        transform: translate(20px, 20px);
+      }
+      100% {
+        transform: translate(0, 0);
+      }
+    }
+
+    /* Header */
+    header {
+  background-color: #2c3e50;
+  color: #fff;
+  padding: 20px 10px;
+  display: flex;
+  justify-content: center;  /* Center content horizontally */
+  align-items: center;
+  position: relative; /* Required to position the hamburger menu absolutely */
+  z-index: 10;
+   }
+
+    header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-align: center;
+  margin: 0; /* Remove any default margins */
+  cursor: pointer;
+  flex-grow: 0;  /* Prevent the title from growing */
+    }
+    header a {
+      text-decoration: none;
+      color: #fff;
+    }
+    .hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 20px;
+  cursor: pointer;
+  z-index: 20;
+  position: absolute; /* Absolutely position the hamburger */
+  right: 20px; /* Right aligned */
+  top: 50%;
+  transform: translateY(-50%);
+    }
+
+.hamburger .line {
+  width: 100%;
+  height: 3px;
+  background-color: white;
+  transition: all 0.3s ease;
+}
+
+
+    .hamburger .line {
+      width: 100%;
+      height: 3px;
+      background-color: white;
+      transition: all 0.3s ease;
+    }
+
+    .nav-menu {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 250px;
+      height: 100%;
+      background-color: #2c3e50;
+      display: flex;
+      flex-direction: column;
+      padding-top: 80px;
+      transition: right 0.3s ease;
+      z-index: 5;
+      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-menu.active {
+      right: 0;
+    }
+
+    .nav-menu a {
+      color: white;
+      text-decoration: none;
+      padding: 1.5rem;
+      font-size: 1.2rem;
+      text-align: center;
+      transition: background-color 0.3s ease;
+    }
+
+    .nav-menu a:hover {
+      background-color: #3498db;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 4;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+
+    /* Canvas containing the shape grid */
+    .canvas {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .shape-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .shape-card {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shape-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+      background-color: #3498db;  /* Color change on hover */
+      color: white;
+    }
+
+    .shape-card i {
+      font-size: 2rem;
+      color: #2c3e50;
+      margin-bottom: 10px;
+      transition: color 0.3s ease;
+    }
+
+    .shape-card:hover i {
+      color: white; /* Icon color change on hover */
+    }
+
+    .shape-card span {
+      display: block;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #2c3e50;
+      color: #bdc3c7;
+      text-align: center;
+      padding: 15px;
+      font-size: 0.9rem;
+      margin-top: auto;
+      z-index: 1;
+    }
+
+    /* Media Queries for Responsiveness */
+    @media (max-width: 768px) {
+      .shape-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 500px) {
+      .shape-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      header h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="overlay" id="overlay"></div>
+
+  <header>
+    <a href="index.html">
+      <h1>Charrouk Geometry Explorer</h1>
+    </a>
+    <div class="hamburger" id="hamburger-btn">
+      <div class="line"></div>
+      <div class="line"></div>
+      <div class="line"></div>
+    </div>
+  </header>
+
+  <nav class="nav-menu" id="nav-menu">
+    <a href="index.html">Home</a>
+    <a href="learning-place.html">Learning Place</a>
+    <a href="about.html">About</a>
+  </nav>
+
+  <div class="canvas">
+    <div class="shape-grid">
+      <div class="shape-card" onclick="location.href='sphere.html'">
+        <i class="fas fa-circle"></i>
+        <span>Sphere</span>
+      </div>
+      <div class="shape-card" onclick="location.href='cube.html'">
+        <i class="fas fa-cube"></i>
+        <span>Cube</span>
+      </div>
+      <div class="shape-card" onclick="location.href='cylinder.html'">
+        <i class="fas fa-drum"></i>
+        <span>Cylinder</span>
+      </div>
+      <div class="shape-card" onclick="location.href='cone.html'">
+        <i class="fas fa-traffic-cone"></i>
+        <span>Cone</span>
+      </div>
+      <div class="shape-card" onclick="location.href='square.html'">
+        <i class="fas fa-border-all"></i>
+        <span>Square (2D)</span>
+      </div>
+      <div class="shape-card" onclick="location.href='rectangle.html'">
+        <i class="fas fa-th-large"></i>
+        <span>Rectangle (2D)</span>
+      </div>
+      <div class="shape-card" onclick="location.href='triangle.html'">
+        <i class="fas fa-play"></i>
+        <span>Isosceles Triangle</span>
+      </div>
+      <div class="shape-card" onclick="location.href='circle.html'">
+        <i class="far fa-dot-circle"></i>
+        <span>Circle (2D)</span>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 Charrouk Geometry Explorer. All rights reserved.
+  </footer>
+
+  <script>
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const navMenu = document.getElementById('nav-menu');
+    const overlay = document.getElementById('overlay');
+
+    hamburgerBtn.addEventListener('click', () => {
+      navMenu.classList.toggle('active');
+      overlay.classList.toggle('active');
+    });
+
+    overlay.addEventListener('click', () => {
+      navMenu.classList.remove('active');
+      overlay.classList.remove('active');
+    });
+
+    // Close menu when clicking on a navigation link
+    const navLinks = document.querySelectorAll('.nav-menu a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        navMenu.classList.remove('active');
+        overlay.classList.remove('active');
+      });
+    });
+  </script>
+
+</body>
+</html>

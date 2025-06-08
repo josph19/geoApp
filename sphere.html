@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sphere | Charrouk Geometry Explorer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #141e30, #243b55);
+      color: #ecf0f1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .controls {
+      position: absolute;
+      top: 30px;
+      left: 30px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 25px;
+      max-width: 300px;
+      width: 100%;
+      z-index: 10;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 1.6rem;
+      color: #00d8ff;
+    }
+
+    .control-item {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 15px;
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    input[type="number"] {
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      font-size: 1rem;
+      background: #2c3e50;
+      color: #fff;
+      width: 100%;
+    }
+
+    .results {
+      margin-top: 10px;
+    }
+
+    .results p {
+      margin-bottom: 6px;
+      font-size: 0.95rem;
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 14px;
+      background-color: #00d8ff;
+      color: #000;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
+    }
+
+    a:hover {
+      background-color: #00aacc;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    @media (max-width: 600px) {
+      .controls {
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="controls">
+    <h2>Sphere</h2>
+    <div class="control-item">
+      <label for="radius">Radius (r):</label>
+      <input type="number" id="radius" value="1" min="0.1" step="0.1" />
+    </div>
+    <div class="results">
+      <p><strong>Surface Area:</strong> <span id="surfaceArea">12.57</span></p>
+      <p><strong>Volume:</strong> <span id="volume">4.19</span></p>
+      <p><strong>Formulas:</strong></p>
+      <p>SA = 4πr²</p>
+      <p>V = (4/3)πr³</p>
+      <a href="index.html">← Back</a>
+      <a href="#" id="downloadBtn">Download Image</a>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    const radiusInput = document.getElementById("radius");
+    const saSpan = document.getElementById("surfaceArea");
+    const volSpan = document.getElementById("volume");
+
+    let scene, camera, renderer, sphere;
+
+    function init() {
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      
+      // Removed `alpha: true` and added solid background color
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setClearColor(0x141e30); // Solid background for canvas
+      document.body.appendChild(renderer.domElement);
+
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+      directionalLight.position.set(5, 5, 5);
+      scene.add(ambientLight);
+      scene.add(directionalLight);
+
+      createSphere();
+
+      camera.position.z = 4;
+      animate();
+    }
+
+    function createSphere() {
+      if (sphere) {
+        scene.remove(sphere);
+        sphere.geometry.dispose();
+        sphere.material.dispose();
+      }
+
+      const r = parseFloat(radiusInput.value);
+      const geometry = new THREE.SphereGeometry(r, 64, 64);
+      const material = new THREE.MeshStandardMaterial({
+        color: 0x00d8ff,
+        metalness: 0.3,
+        roughness: 0.4
+      });
+
+      sphere = new THREE.Mesh(geometry, material);
+      scene.add(sphere);
+
+      updateCalculations(r);
+    }
+
+    function updateCalculations(r) {
+      const surfaceArea = 4 * Math.PI * r * r;
+      const volume = (4 / 3) * Math.PI * Math.pow(r, 3);
+
+      saSpan.textContent = surfaceArea.toFixed(2);
+      volSpan.textContent = volume.toFixed(2);
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (sphere) {
+        sphere.rotation.x += 0.01;
+        sphere.rotation.y += 0.01;
+      }
+      renderer.render(scene, camera);
+    }
+
+    radiusInput.addEventListener("input", createSphere);
+
+    document.getElementById("downloadBtn").addEventListener("click", function () {
+      // Render one last time before download to capture latest frame
+      renderer.render(scene, camera);
+
+      const dataURL = renderer.domElement.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.download = "sphere.png";
+      link.href = dataURL;
+      link.click();
+    });
+
+    init();
+  </script>
+</body>
+</html>

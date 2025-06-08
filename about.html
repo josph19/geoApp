@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About - Charrouk Geometry Explorer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* Reset and global styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Background with floating effect */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://images.unsplash.com/photo-1562059600-b30c060d9a47') no-repeat center center/cover; /* Add a suitable background image of mathematical shapes */
+      opacity: 0.1;
+      animation: float 10s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translate(0, 0);
+      }
+      50% {
+        transform: translate(20px, 20px);
+      }
+      100% {
+        transform: translate(0, 0);
+      }
+    }
+
+    /* Header */
+    header {
+  background-color: #2c3e50;
+  color: #fff;
+  padding: 20px 10px;
+  display: flex;
+  justify-content: center;  /* Center content horizontally */
+  align-items: center;
+  position: relative; /* Required to position the hamburger menu absolutely */
+  z-index: 10;
+   }
+
+    header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-align: center;
+  margin: 0; /* Remove any default margins */
+  cursor: pointer;
+  flex-grow: 0;  /* Prevent the title from growing */
+    }
+    header a {
+      text-decoration: none;
+      color: #fff;
+    }
+    .hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 20px;
+  cursor: pointer;
+  z-index: 20;
+  position: absolute; /* Absolutely position the hamburger */
+  right: 20px; /* Right aligned */
+  top: 50%;
+  transform: translateY(-50%);
+    }
+
+    .hamburger .line {
+      width: 100%;
+      height: 3px;
+      background-color: white;
+      transition: all 0.3s ease;
+    }
+
+    .nav-menu {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 250px;
+      height: 100%;
+      background-color: #2c3e50;
+      display: flex;
+      flex-direction: column;
+      padding-top: 80px;
+      transition: right 0.3s ease;
+      z-index: 5;
+      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-menu.active {
+      right: 0;
+    }
+
+    .nav-menu a {
+      color: white;
+      text-decoration: none;
+      padding: 1.5rem;
+      font-size: 1.2rem;
+      text-align: center;
+      transition: background-color 0.3s ease;
+    }
+
+    .nav-menu a:hover {
+      background-color: #3498db;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 4;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+
+    /* Content Styling */
+    .content {
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .content h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #3498db;
+    }
+
+    .content p {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #2c3e50;
+      color: #bdc3c7;
+      text-align: center;
+      padding: 15px;
+      font-size: 0.9rem;
+      margin-top: auto;
+      z-index: 1;
+    }
+
+    /* Media Queries for Responsiveness */
+    @media (max-width: 768px) {
+      .content {
+        padding: 15px;
+      }
+    }
+
+    @media (max-width: 500px) {
+      header h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="overlay" id="overlay"></div>
+
+  <header>
+    <a href="index.html">
+        <h1>Charrouk Geometry Explorer</h1>
+      </a>
+    <div class="hamburger" id="hamburger-btn">
+      <div class="line"></div>
+      <div class="line"></div>
+      <div class="line"></div>
+    </div>
+  </header>
+
+  <nav class="nav-menu" id="nav-menu">
+    <a href="index.html">Home</a>
+    <a href="learning-place.html">Learning Place</a>
+    <a href="about.html">About</a>
+  </nav>
+
+  <div class="content">
+  <h2>About Charrouk Geometry Explorer</h2>
+  <p><strong>Charrouk Geometry Explorer</strong> is an interactive web application designed by <strong>Sara Charrouk</strong> to help users visualize and explore a variety of 3D and 2D geometric shapes. From spheres and cubes to circles and triangles, this tool offers an immersive experience for understanding geometric concepts and properties.</p>
+
+  <h3>Features</h3>
+  <p>Users can click on any shape to learn more about its properties and mathematical significance. This makes learning geometry interactive, engaging, and fun.</p>
+
+  <h3>Mission</h3>
+  <p>My mission is to provide a comprehensive, easy-to-use learning platform for students and geometry enthusiasts. This app is built to enhance the learning process with a visually appealing and hands-on experience.</p>
+
+  <h3>About the Creator</h3>
+  <p>Hi, I'm <strong>Sara Charrouk</strong>, the creator of Charrouk Geometry Explorer. I designed this application to make geometry more approachable and visually exciting for learners of all ages. I hope you enjoy exploring as much as I enjoyed creating it!</p>
+</div>
+
+  <footer>
+     &copy; 2025 Charrouk Geometry Explorer. All rights reserved.
+  </footer>
+
+  <script>
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const navMenu = document.getElementById('nav-menu');
+    const overlay = document.getElementById('overlay');
+
+    hamburgerBtn.addEventListener('click', () => {
+      navMenu.classList.toggle('active');
+      overlay.classList.toggle('active');
+    });
+
+    overlay.addEventListener('click', () => {
+      navMenu.classList.remove('active');
+      overlay.classList.remove('active');
+    });
+
+    // Close menu when clicking on a navigation link
+    const navLinks = document.querySelectorAll('.nav-menu a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        navMenu.classList.remove('active');
+        overlay.classList.remove('active');
+      });
+    });
+  </script>
+
+</body>
+</html>
